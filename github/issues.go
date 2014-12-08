@@ -40,19 +40,16 @@ func RequestIssues(milestone int, stream string, username string, password strin
 	req.SetBasicAuth(username, password)
 	response, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("%s", err)
-		os.Exit(1)
+    return nil, err
 	}
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Printf("%s", err)
-		os.Exit(1)
+    return nil, err
 	}
 	err = json.Unmarshal(contents, &issues)
 	if err != nil {
-		fmt.Printf("%s", err)
-		os.Exit(1)
+    return nil, err
 	}
 	for i, issue := range issues {
 		issues[i].Complete, issues[i].Incomplete, issues[i].Unknown = parseIssueBody(issue.Body)
@@ -60,16 +57,14 @@ func RequestIssues(milestone int, stream string, username string, password strin
 	return issues, nil
 }
 
-func GetIssues(iteration string, stream string, username string, password string) []Issue {
+func GetIssues(iteration string, stream string, username string, password string) ([]Issue, error) {
 	milestone, err := LookupMilestone(iteration, username, password)
 	if err != nil {
-		fmt.Printf("%s", err)
-		os.Exit(1)
+    return nil, err
 	}
 	issues, err := RequestIssues(milestone, stream, username, password)
 	if err != nil {
-		fmt.Printf("%s", err)
-		os.Exit(1)
+    return nil, err
 	}
-	return issues
+	return issues, nil
 }

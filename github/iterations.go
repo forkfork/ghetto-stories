@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+  "errors"
 )
 
 type Milestone struct {
@@ -24,6 +25,11 @@ func LookupMilestone(iteration string, username string, password string) (int, e
 	response, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("%s", err)
+		os.Exit(1)
+	}
+	if response.StatusCode != 200 {
+    errResponse := errors.New(response.Status)
+    return 0, errResponse
 		os.Exit(1)
 	}
 	defer response.Body.Close()
