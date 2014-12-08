@@ -15,7 +15,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	iteration, stream := urlParts[0], urlParts[1]
-	issues := github.GetIssues(iteration, stream)
+	issues := github.GetIssues(iteration, stream, "dummyusername", "dummypassword")
 	for _, issue := range issues {
 		fmt.Fprintf(w, "%s done %d todo %d unknown %d\n", issue.Name, issue.Complete, issue.Incomplete, issue.Unknown)
 	}
